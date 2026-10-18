@@ -1,0 +1,94 @@
+{
+	"operationId": "issueClientCertificate",
+	"summary": "Issue a Client Certificate",
+	"description": "Generates a new key pair and certificate and returns them as a file download. The private key is not stored and can not be downloaded again. The id of the new certificate is returned in the X-Client-Certificate-Id header.",
+	"tags": [
+		"client-cas"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"access_lists.manage"
+			]
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "caID",
+			"description": "Client CA ID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"example": 1
+		}
+	],
+	"requestBody": {
+		"description": "Client Certificate Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"name",
+						"validity_days",
+						"format"
+					],
+					"properties": {
+						"name": {
+							"$ref": "../../../../../components/client-certificate-object.json#/properties/name"
+						},
+						"validity_days": {
+							"type": "integer",
+							"minimum": 1,
+							"maximum": 3650,
+							"example": 365
+						},
+						"format": {
+							"type": "string",
+							"enum": [
+								"pkcs12",
+								"pem"
+							],
+							"description": "pkcs12 (.p12, requires a password) or pem (key, certificate and CA in one file, the key is encrypted when a password is given)",
+							"example": "pkcs12"
+						},
+						"password": {
+							"type": "string",
+							"maxLength": 128,
+							"example": "changeme"
+						}
+					}
+				},
+				"example": {
+					"name": "jane-laptop",
+					"validity_days": 365,
+					"format": "pkcs12",
+					"password": "changeme"
+				}
+			}
+		}
+	},
+	"responses": {
+		"201": {
+			"description": "201 response",
+			"content": {
+				"application/x-pkcs12": {
+					"schema": {
+						"type": "string",
+						"format": "binary"
+					}
+				},
+				"application/x-pem-file": {
+					"schema": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	}
+}

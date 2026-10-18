@@ -9,6 +9,7 @@ import ciRoutes from "./ci.js";
 import logsRoutes from "./logs.js";
 import accessListsRoutes from "./nginx/access_lists.js";
 import certificatesHostsRoutes from "./nginx/certificates.js";
+import clientCasRoutes from "./nginx/client_cas.js";
 import deadHostsRoutes from "./nginx/dead_hosts.js";
 import proxyHostsRoutes from "./nginx/proxy_hosts.js";
 import redirectionHostsRoutes from "./nginx/redirection_hosts.js";
@@ -61,6 +62,7 @@ router.use("/nginx/dead-hosts", deadHostsRoutes);
 router.use("/nginx/streams", streamsRoutes);
 router.use("/nginx/access-lists", accessListsRoutes);
 router.use("/nginx/certificates", certificatesHostsRoutes);
+router.use("/nginx/client-cas", clientCasRoutes);
 
 // Only include CI routes if we're in a CI environment
 if (isCI()) {

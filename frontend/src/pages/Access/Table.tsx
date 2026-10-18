@@ -47,6 +47,14 @@ export default function Table({ data, isFetching, isFiltered, onEdit, onDelete, 
 				header: intl.formatMessage({ id: "column.access" }),
 				cell: (info: any) => <T id="access-list.access-count" data={{ count: info.getValue().length }} />,
 			}),
+			columnHelper.accessor((row: any) => row.clientCas, {
+				id: "clientCas",
+				header: intl.formatMessage({ id: "column.mtls" }),
+				cell: (info: any) => {
+					const value = info.getValue() || [];
+					return value.length ? value.map((ca: any) => ca.name).join(", ") : "-";
+				},
+			}),
 			columnHelper.accessor((row: any) => row.satisfyAny, {
 				id: "satisfyAny",
 				header: intl.formatMessage({ id: "column.satisfy" }),

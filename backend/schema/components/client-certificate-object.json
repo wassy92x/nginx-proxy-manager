@@ -1,0 +1,66 @@
+{
+	"type": "object",
+	"description": "Client Certificate object. Neither the certificate nor its private key are stored, only what is needed to revoke it and to show it.",
+	"required": [
+		"id",
+		"created_on",
+		"modified_on",
+		"owner_user_id",
+		"client_ca_id",
+		"name",
+		"serial",
+		"expires_on",
+		"revoked",
+		"meta"
+	],
+	"properties": {
+		"id": {
+			"$ref": "../common.json#/properties/id"
+		},
+		"created_on": {
+			"$ref": "../common.json#/properties/created_on"
+		},
+		"modified_on": {
+			"$ref": "../common.json#/properties/modified_on"
+		},
+		"owner_user_id": {
+			"$ref": "../common.json#/properties/user_id"
+		},
+		"client_ca_id": {
+			"$ref": "../common.json#/properties/id"
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 64,
+			"description": "Used as the Common Name of the certificate",
+			"example": "jane-laptop"
+		},
+		"serial": {
+			"type": "string",
+			"example": "3B403FE9E71AC8EDA7557290F8FAF3E7"
+		},
+		"expires_on": {
+			"type": "string",
+			"readOnly": true,
+			"example": "2025-10-08T22:15:40.000Z"
+		},
+		"revoked": {
+			"type": "boolean",
+			"example": false
+		},
+		"revoked_on": {
+			"type": [
+				"string",
+				"null"
+			],
+			"example": null
+		},
+		"meta": {
+			"type": "object",
+			"example": {
+				"fingerprint": "7A:C6:C4:94:..."
+			}
+		}
+	}
+}

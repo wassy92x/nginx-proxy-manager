@@ -1,0 +1,74 @@
+{
+	"operationId": "createClientCa",
+	"summary": "Create a Client CA",
+	"tags": [
+		"client-cas"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"access_lists.manage"
+			]
+		}
+	],
+	"requestBody": {
+		"description": "Client CA Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"name",
+						"validity_days"
+					],
+					"properties": {
+						"name": {
+							"$ref": "../../../components/client-ca-object.json#/properties/name"
+						},
+						"validity_days": {
+							"$ref": "../../../components/client-ca-object.json#/properties/validity_days"
+						}
+					}
+				},
+				"example": {
+					"name": "Employees",
+					"validity_days": 3650
+				}
+			}
+		}
+	},
+	"responses": {
+		"201": {
+			"description": "201 response",
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": {
+								"id": 1,
+								"created_on": "2026-10-18T16:31:21.000Z",
+								"modified_on": "2026-10-18T16:31:21.000Z",
+								"owner_user_id": 1,
+								"name": "Employees",
+								"validity_days": 3650,
+								"expires_on": "2036-10-15T16:26:20.000Z",
+								"crl_number": 1,
+								"crl_next_update": "2026-11-17T16:26:20.000Z",
+								"client_certificate_count": 0,
+								"meta": {
+									"serial": "5D92E8A2BF717DE0C936117733D697FF",
+									"fingerprint": "BE:32:54:64:70:4A:2F:4F:76:0C:D7:AC:42:FA:FC:DC:28:82:79:73:7E:F1:1E:94:07:69:F5:65:F5:D5:EA:C1"
+								}
+							}
+						}
+					},
+					"schema": {
+						"$ref": "../../../components/client-ca-object.json"
+					}
+				}
+			}
+		}
+	}
+}

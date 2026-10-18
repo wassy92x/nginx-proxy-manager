@@ -33,6 +33,7 @@ so that the barrier to entry here is low.
 - Easily create forwarding domains, redirections, streams, and 404 hosts without knowing anything about Nginx
 - Free SSL using Let's Encrypt or provide your own custom SSL certificates
 - Access Lists and basic HTTP Authentication for your hosts
+- Client certificate authentication (mTLS) with built-in Client CAs
 - Advanced Nginx configuration available for super users
 - User management, permissions, and audit log
 

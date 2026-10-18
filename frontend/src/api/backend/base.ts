@@ -80,16 +80,31 @@ export async function get(args: GetArgs, abortController?: AbortController) {
 	return processResponse(await baseGet(args, abortController));
 }
 
-export async function download({ url, params }: GetArgs, filename = "download.file") {
-	const headers = buildAuthHeader();
-	const res = await fetch(buildUrl({ url, params }), { headers });
-	const bl = await res.blob();
-	const u = window.URL.createObjectURL(bl);
+/**
+ * Extracts the filename from a Content-Disposition header
+ */
+function getDownloadFilename(response: Response, fallback: string): string {
+	const disposition = response.headers.get("Content-Disposition") || "";
+	const match = disposition.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i);
+	return match ? decodeURIComponent(match[1]) : fallback;
+}
+
+function saveBlob(blob: Blob, filename: string) {
+	const u = window.URL.createObjectURL(blob);
 	const a = document.createElement("a");
 	a.href = u;
 	a.download = filename;
 	a.click();
-	window.URL.revokeObjectURL(url);
+	window.URL.revokeObjectURL(u);
+}
+
+export async function download({ url, params }: GetArgs, filename = "download.file") {
+	const response = await baseGet({ url, params });
+	if (!response.ok) {
+		// Errors are JSON, this throws with the message
+		await processResponse(response);
+	}
+	saveBlob(await response.blob(), getDownloadFilename(response, filename));
 }
 
 interface PostArgs {
@@ -127,6 +142,26 @@ export async function post({ url, params, data, noAuth }: PostArgs, abortControl
 	const signal = abortController?.signal;
 	const response = await fetch(apiUrl, { method, headers, body, signal });
 	return processResponse(response);
+}
+
+/**
+ * Posts JSON and saves the response body as a file, used when the
+ * server generates the file for this request only
+ */
+export async function postDownload({ url, params, data }: PostArgs, filename = "download.file") {
+	const response = await fetch(buildUrl({ url, params }), {
+		method: "POST",
+		headers: {
+			...buildAuthHeader(),
+			[contentTypeHeader]: "application/json",
+		},
+		body: buildBody(data),
+	});
+	if (!response.ok) {
+		// Errors are JSON, this throws with the message
+		await processResponse(response);
+	}
+	saveBlob(await response.blob(), getDownloadFilename(response, filename));
 }
 
 interface PutArgs {

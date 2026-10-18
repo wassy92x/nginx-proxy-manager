@@ -1,0 +1,63 @@
+{
+	"operationId": "getClientCertificates",
+	"summary": "Get all Client Certificates of a CA",
+	"tags": [
+		"client-cas"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"access_lists.view"
+			]
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "caID",
+			"description": "Client CA ID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"example": 1
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"examples": {
+						"default": {
+							"value": [
+								{
+									"id": 1,
+									"created_on": "2026-10-18T16:32:07.000Z",
+									"modified_on": "2026-10-18T16:32:49.000Z",
+									"owner_user_id": 1,
+									"client_ca_id": 1,
+									"name": "jane-laptop",
+									"serial": "47A77E8E632DFB21D9C1C76AE0F49095",
+									"expires_on": "2027-10-18T16:27:06.000Z",
+									"revoked": false,
+									"revoked_on": null,
+									"meta": {
+										"fingerprint": "7A:C6:C4:94:6B:81:72:08:A8:85:5C:E3:55:70:0E:15:1A:2C:A7:5E:D8:29:29:15:9F:CB:94:52:48:9C:5C:03"
+									}
+								}
+							]
+						}
+					},
+					"schema": {
+						"type": "array",
+						"items": {
+							"$ref": "../../../../../components/client-certificate-object.json"
+						}
+					}
+				}
+			}
+		}
+	}
+}

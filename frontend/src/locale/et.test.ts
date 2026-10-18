@@ -9,6 +9,7 @@ const estonian = et as Record<string, { defaultMessage: string }>;
 const allowedIdentical = new Set([
 	"certificates.key-type-ecdsa",
 	"certificates.key-type-rsa",
+	"column.mtls",
 	"column.ssl",
 	"lets-encrypt",
 	"object.actions-title",

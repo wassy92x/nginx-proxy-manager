@@ -11,6 +11,7 @@ import accessListAuthModel from "../models/access_list_auth.js";
 import accessListClientModel from "../models/access_list_client.js";
 import proxyHostModel from "../models/proxy_host.js";
 import internalAuditLog from "./audit-log.js";
+import internalClientCa from "./client-ca.js";
 import internalNginx from "./nginx.js";
 
 const omissions = () => {
@@ -49,6 +50,39 @@ const getProxyHostsUsingAccessListInLocations = async (accessListId) => {
 	return (Array.isArray(result[0]) ? result[0] : result) || [];
 };
 
+/**
+ * Every Client CA must exist and be visible to the user. Checked before
+ * anything is written, so a bad id doesn't leave a half saved access list.
+ *
+ * @param   {Access}  access
+ * @param   {Array}   [clientCaIds]
+ * @returns {Promise}
+ */
+const validateClientCas = async (access, clientCaIds) => {
+	for (const id of _.uniq(clientCaIds || [])) {
+		await internalClientCa.get(access, { id });
+	}
+};
+
+/**
+ * Replaces the Client CAs that an access list trusts for mTLS
+ *
+ * @param   {Integer}  accessListId
+ * @param   {Array}    clientCaIds
+ * @returns {Promise}
+ */
+const setClientCas = async (accessListId, clientCaIds) => {
+	const ids = _.uniq(clientCaIds);
+	await db()("access_list_client_ca").where("access_list_id", accessListId).delete();
+	if (ids.length) {
+		await db()("access_list_client_ca").insert(
+			ids.map((id) => {
+				return { access_list_id: accessListId, client_ca_id: id };
+			}),
+		);
+	}
+};
+
 const internalAccessList = {
 	/**
 	 * @param   {Access}  access
@@ -57,6 +91,7 @@ const internalAccessList = {
 	 */
 	create: async (access, data) => {
 		await access.can("access_lists:create", data);
+		await validateClientCas(access, data.client_ca_ids);
 		const row = await accessListModel
 			.query()
 			.insertAndFetch({
@@ -93,12 +128,23 @@ const internalAccessList = {
 			});
 		}
 
+		// Client CAs for mTLS
+		if (data.client_ca_ids?.length) {
+			await setClientCas(row.id, data.client_ca_ids);
+		}
+
 		// re-fetch with expansions
 		const freshRow = await internalAccessList.get(
 			access,
 			{
 				id: data.id,
-				expand: ["owner", "items", "clients", "proxy_hosts.access_list.[clients,items]"],
+				expand: [
+					"owner",
+					"items",
+					"clients",
+					"client_cas",
+					"proxy_hosts.access_list.[clients,items,client_cas]",
+				],
 			},
 			true, // skip masking
 		);
@@ -139,6 +185,7 @@ const internalAccessList = {
 				`Access List could not be updated, IDs do not match: ${row.id} !== ${data.id}`,
 			);
 		}
+		await validateClientCas(access, data.client_ca_ids);
 
 		// patch name if specified
 		if (typeof data.name !== "undefined" && data.name) {
@@ -199,6 +246,11 @@ const internalAccessList = {
 			}
 		}
 
+		// Check for client CAs and replace them
+		if (typeof data.client_ca_ids !== "undefined" && data.client_ca_ids) {
+			await setClientCas(data.id, data.client_ca_ids);
+		}
+
 		// Add to audit log
 		await internalAuditLog.add(access, {
 			action: "updated",
@@ -212,7 +264,13 @@ const internalAccessList = {
 			access,
 			{
 				id: data.id,
-				expand: ["owner", "items", "clients", "proxy_hosts.[certificate,access_list.[clients,items]]"],
+				expand: [
+					"owner",
+					"items",
+					"clients",
+					"client_cas",
+					"proxy_hosts.[certificate,access_list.[clients,items,client_cas]]",
+				],
 			},
 			true, // skip masking
 		);
@@ -234,7 +292,7 @@ const internalAccessList = {
 					.where("is_deleted", 0)
 					.whereIn("id", locationHostIds)
 					.allowGraph(proxyHostModel.defaultAllowGraph)
-					.withGraphFetched("[owner, certificate, access_list.[clients,items]]");
+					.withGraphFetched("[owner, certificate, access_list.[clients,items,client_cas]]");
 				await internalNginx.bulkGenerateConfigs("proxy_host", locationHosts);
 			}
 		}
@@ -265,7 +323,9 @@ const internalAccessList = {
 			.where("access_list.is_deleted", 0)
 			.andWhere("access_list.id", thisData.id)
 			.groupBy("access_list.id")
-			.allowGraph("[owner,items,clients,proxy_hosts.[certificate,access_list.[clients,items]]]")
+			.allowGraph(
+				"[owner,items,clients,client_cas,proxy_hosts.[certificate,access_list.[clients,items,client_cas]]]",
+			)
 			.first();
 
 		if (accessData.permission_visibility !== "all") {
@@ -318,6 +378,7 @@ const internalAccessList = {
 		await accessListModel.query().where("id", row.id).patch({
 			is_deleted: 1,
 		});
+		await db()("access_list_client_ca").where("access_list_id", row.id).delete();
 
 		// 2. update any proxy hosts that were using it (ignoring permissions)
 		const affectedHostIds = new Set((row.proxy_hosts || []).map((h) => h.id));
@@ -348,7 +409,7 @@ const internalAccessList = {
 				.where("is_deleted", 0)
 				.whereIn("id", [...affectedHostIds])
 				.allowGraph(proxyHostModel.defaultAllowGraph)
-				.withGraphFetched("[owner, certificate, access_list.[clients,items]]");
+				.withGraphFetched("[owner, certificate, access_list.[clients,items,client_cas]]");
 			await internalNginx.bulkGenerateConfigs("proxy_host", affectedHosts);
 		}
 
@@ -390,7 +451,7 @@ const internalAccessList = {
 			})
 			.where("access_list.is_deleted", 0)
 			.groupBy("access_list.id")
-			.allowGraph("[owner,items,clients]")
+			.allowGraph("[owner,items,clients,client_cas]")
 			.orderBy("access_list.name", "ASC");
 
 		if (accessData.permission_visibility !== "all") {

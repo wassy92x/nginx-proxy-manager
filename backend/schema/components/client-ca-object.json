@@ -1,0 +1,82 @@
+{
+	"type": "object",
+	"description": "Client Certificate Authority object, used for mTLS",
+	"required": [
+		"id",
+		"created_on",
+		"modified_on",
+		"owner_user_id",
+		"name",
+		"validity_days",
+		"expires_on",
+		"meta"
+	],
+	"properties": {
+		"id": {
+			"$ref": "../common.json#/properties/id"
+		},
+		"created_on": {
+			"$ref": "../common.json#/properties/created_on"
+		},
+		"modified_on": {
+			"$ref": "../common.json#/properties/modified_on"
+		},
+		"owner_user_id": {
+			"$ref": "../common.json#/properties/user_id"
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 64,
+			"example": "Employees"
+		},
+		"validity_days": {
+			"type": "integer",
+			"description": "Maximum lifetime of the CA certificate in days, it is renewed automatically before it expires",
+			"minimum": 30,
+			"maximum": 7300,
+			"example": 3650
+		},
+		"expires_on": {
+			"type": "string",
+			"description": "Date and time of expiration",
+			"readOnly": true,
+			"example": "2034-10-08T22:15:40.000Z"
+		},
+		"crl_number": {
+			"type": "integer",
+			"minimum": 0,
+			"example": 3
+		},
+		"crl_next_update": {
+			"type": [
+				"string",
+				"null"
+			],
+			"example": "2024-11-07T22:15:40.000Z"
+		},
+		"client_certificate_count": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "Number of client certificates that are neither revoked nor expired",
+			"example": 3
+		},
+		"meta": {
+			"type": "object",
+			"example": {
+				"serial": "3B403FE9E71AC8EDA7557290F8FAF3E7",
+				"fingerprint": "7A:C6:C4:94:..."
+			}
+		},
+		"owner": {
+			"$ref": "./user-object.json"
+		},
+		"certificates": {
+			"type": "array",
+			"items": {
+				"$ref": "./client-certificate-object.json"
+			},
+			"example": []
+		}
+	}
+}

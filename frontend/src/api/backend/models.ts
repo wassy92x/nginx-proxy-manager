@@ -82,6 +82,40 @@ export interface AccessList {
 	owner?: User;
 	items?: AccessListItem[];
 	clients?: AccessListClient[];
+	clientCas?: ClientCa[];
+	// Only used when saving:
+	clientCaIds?: number[];
+}
+
+export interface ClientCa {
+	id?: number;
+	createdOn?: string;
+	modifiedOn?: string;
+	ownerUserId?: number;
+	name: string;
+	validityDays: number;
+	expiresOn?: string;
+	crlNumber?: number;
+	crlNextUpdate?: string | null;
+	clientCertificateCount?: number;
+	meta?: Record<string, any>;
+	// Expansions:
+	owner?: User;
+	certificates?: ClientCertificate[];
+}
+
+export interface ClientCertificate {
+	id: number;
+	createdOn: string;
+	modifiedOn: string;
+	ownerUserId: number;
+	clientCaId: number;
+	name: string;
+	serial: string;
+	expiresOn: string;
+	revoked: boolean;
+	revokedOn: string | null;
+	meta: Record<string, any>;
 }
 
 export interface AccessListItem {

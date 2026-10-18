@@ -77,6 +77,15 @@
 	"access-list.inherit.subtitle": {
 		"defaultMessage": "Kasutab puhverserveri juurdepääsuloendit"
 	},
+	"access-list.mtls.help": {
+		"defaultMessage": "Kui kliendi CA-d on valitud, aktsepteeritakse kehtivat kliendisertifikaati (mTLS), mille on välja andnud üks neist. Nagu volitusi ja reegleid, kombineeritakse seda vastavalt valikule „Piisab ühest tingimusest“. Kliendisertifikaadid töötavad ainult SSL-sertifikaati kasutavate hostide puhul."
+	},
+	"access-list.mtls.no-cas": {
+		"defaultMessage": "Kliendi CA-sid veel pole, loo üks jaotises Kliendi CA-d"
+	},
+	"access-list.mtls.placeholder": {
+		"defaultMessage": "Kliendisertifikaat pole nõutav"
+	},
 	"access-list.pass-auth": {
 		"defaultMessage": "Edasta autentimine sihtserverile"
 	},
@@ -257,6 +266,96 @@
 	"certificates.request.title": {
 		"defaultMessage": "Taotle uut sertifikaati"
 	},
+	"client-ca": {
+		"defaultMessage": "Kliendi CA"
+	},
+	"client-ca.certificate-count": {
+		"defaultMessage": "{count} aktiivset"
+	},
+	"client-ca.delete.content": {
+		"defaultMessage": "Kas soovid kindlasti selle kliendi CA kustutada? Kõik selle kliendisertifikaadid lakkavad töötamast."
+	},
+	"client-ca.download": {
+		"defaultMessage": "Laadi alla CA sertifikaat"
+	},
+	"client-ca.name.help": {
+		"defaultMessage": "Nimi on ainult silt, CA sertifikaat säilitab oma algse nime, et väljaantud kliendisertifikaadid jääksid kehtima."
+	},
+	"client-ca.validity-days": {
+		"defaultMessage": "Maksimaalne kehtivus (päevades)"
+	},
+	"client-ca.validity-days.help": {
+		"defaultMessage": "CA sertifikaat uuendatakse taustal automaatselt enne aegumist. Väljaantud kliendisertifikaadid jäävad kehtima."
+	},
+	"client-cas": {
+		"defaultMessage": "Kliendi CA-d"
+	},
+	"client-certificate": {
+		"defaultMessage": "Kliendisertifikaat"
+	},
+	"client-certificate.delete.confirm": {
+		"defaultMessage": "Kas kustutada see kliendisertifikaat? Kui see on veel kehtiv, see tühistatakse."
+	},
+	"client-certificate.expired": {
+		"defaultMessage": "Aegunud"
+	},
+	"client-certificate.format": {
+		"defaultMessage": "Vorming"
+	},
+	"client-certificate.format.help": {
+		"defaultMessage": "PKCS#12 saab importida brauseritesse ja operatsioonisüsteemidesse. PEM sisaldab võtit, sertifikaati ja CA-d ühes failis."
+	},
+	"client-certificate.format.pem": {
+		"defaultMessage": "PEM-fail (.pem)"
+	},
+	"client-certificate.format.pkcs12": {
+		"defaultMessage": "PKCS#12-fail (.p12)"
+	},
+	"client-certificate.issue": {
+		"defaultMessage": "Väljasta kliendisertifikaat"
+	},
+	"client-certificate.issue-download": {
+		"defaultMessage": "Väljasta ja laadi alla"
+	},
+	"client-certificate.issued": {
+		"defaultMessage": "Kliendisertifikaat on väljastatud ja alla laaditud"
+	},
+	"client-certificate.key-notice": {
+		"defaultMessage": "Privaatvõti luuakse kohe ja see sisaldub ainult selles allalaadimises. Seda ei salvestata ja seda ei saa uuesti alla laadida."
+	},
+	"client-certificate.name.help": {
+		"defaultMessage": "Kasutatakse sertifikaadi üldnimena (CN), nt isik või seade"
+	},
+	"client-certificate.password.help-pem": {
+		"defaultMessage": "Valikuline, krüpteerib privaatvõtme"
+	},
+	"client-certificate.password.help-pkcs12": {
+		"defaultMessage": "Kaitseb faili, PKCS#12 puhul kohustuslik"
+	},
+	"client-certificate.revoke": {
+		"defaultMessage": "Tühista"
+	},
+	"client-certificate.revoke.confirm": {
+		"defaultMessage": "Kas tühistada see kliendisertifikaat? Seda ei saa enam kasutada ja seda ei saa tagasi võtta."
+	},
+	"client-certificate.revoke.success": {
+		"defaultMessage": "Kliendisertifikaat on tühistatud"
+	},
+	"client-certificate.revoked": {
+		"defaultMessage": "Tühistatud"
+	},
+	"client-certificate.valid": {
+		"defaultMessage": "Kehtiv"
+	},
+	"client-certificate.validity-days": {
+		"defaultMessage": "Kehtivus (päevades)"
+	},
+	"client-certificate.validity-days.help": {
+		"defaultMessage": "Ei uuendata automaatselt"
+	},
+	"client-certificates": {
+		"defaultMessage": "Kliendisertifikaadid"
+	},
 	"column.access": {
 		"defaultMessage": "Juurdepääs"
 	},
@@ -293,6 +392,9 @@
 	"column.incoming-port": {
 		"defaultMessage": "Sisendport"
 	},
+	"column.mtls": {
+		"defaultMessage": "mTLS"
+	},
 	"column.name": {
 		"defaultMessage": "Nimi"
 	},
@@ -320,6 +422,9 @@
 	"column.scheme": {
 		"defaultMessage": "Skeem"
 	},
+	"column.serial": {
+		"defaultMessage": "Seerianumber"
+	},
 	"column.source": {
 		"defaultMessage": "Allikas"
 	},
@@ -329,11 +434,17 @@
 	"column.status": {
 		"defaultMessage": "Olek"
 	},
+	"column.validity": {
+		"defaultMessage": "Kehtivus"
+	},
 	"created-on": {
 		"defaultMessage": "Loodud: {date}"
 	},
 	"dashboard": {
 		"defaultMessage": "Töölaud"
+	},
+	"days-count": {
+		"defaultMessage": "{count} {count, plural, one {päev} other {päeva}}"
 	},
 	"dead-host": {
 		"defaultMessage": "404-host"
@@ -616,6 +727,9 @@
 	},
 	"object.event.renewed": {
 		"defaultMessage": "Uuendatud: {object}"
+	},
+	"object.event.revoked": {
+		"defaultMessage": "Tühistati {object}"
 	},
 	"object.event.updated": {
 		"defaultMessage": "Muudetud: {object}"

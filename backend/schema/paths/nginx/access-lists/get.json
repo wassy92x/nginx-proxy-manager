@@ -20,7 +20,8 @@
 					"owner",
 					"items",
 					"clients",
-					"proxy_hosts"
+					"proxy_hosts",
+					"client_cas"
 				]
 			}
 		}

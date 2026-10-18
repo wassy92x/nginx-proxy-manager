@@ -1,5 +1,6 @@
 import {
 	IconBook,
+	IconCertificate,
 	IconDeviceDesktop,
 	IconFileText,
 	IconHome,
@@ -74,6 +75,13 @@ const menuItems: MenuItem[] = [
 		to: "/access",
 		icon: IconLock,
 		label: "access-lists",
+		permissionSection: ACCESS_LISTS,
+		permission: VIEW,
+	},
+	{
+		to: "/client-cas",
+		icon: IconCertificate,
+		label: "client-cas",
 		permissionSection: ACCESS_LISTS,
 		permission: VIEW,
 	},

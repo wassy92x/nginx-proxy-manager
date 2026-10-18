@@ -77,6 +77,15 @@
 	"access-list.inherit.subtitle": {
 		"defaultMessage": "Verwendet die Zugriffsliste des Proxy Hosts"
 	},
+	"access-list.mtls.help": {
+		"defaultMessage": "Wenn Client-CAs ausgewählt sind, wird ein gültiges, von einer dieser CAs ausgestelltes Client-Zertifikat (mTLS) akzeptiert. Wie Genehmigungen und Regeln wird es gemäß „Satisfy Any“ kombiniert. Client-Zertifikate funktionieren nur bei Hosts mit SSL-Zertifikat."
+	},
+	"access-list.mtls.no-cas": {
+		"defaultMessage": "Noch keine Client-CAs vorhanden, lege eine unter Client-CAs an"
+	},
+	"access-list.mtls.placeholder": {
+		"defaultMessage": "Kein Client-Zertifikat erforderlich"
+	},
 	"access-list.pass-auth": {
 		"defaultMessage": "Authentifizierung an Upstream weiterleiten"
 	},
@@ -257,6 +266,96 @@
 	"certificates.request.title": {
 		"defaultMessage": "Anfordern eines neuen Zertifikates"
 	},
+	"client-ca": {
+		"defaultMessage": "Client-CA"
+	},
+	"client-ca.certificate-count": {
+		"defaultMessage": "{count} aktiv"
+	},
+	"client-ca.delete.content": {
+		"defaultMessage": "Soll diese Client-CA wirklich gelöscht werden? Alle ihre Client-Zertifikate funktionieren danach nicht mehr."
+	},
+	"client-ca.download": {
+		"defaultMessage": "CA-Zertifikat herunterladen"
+	},
+	"client-ca.name.help": {
+		"defaultMessage": "Der Name ist nur eine Bezeichnung, das CA-Zertifikat behält seinen ursprünglichen Namen, damit ausgestellte Client-Zertifikate gültig bleiben."
+	},
+	"client-ca.validity-days": {
+		"defaultMessage": "Maximale Gültigkeit (Tage)"
+	},
+	"client-ca.validity-days.help": {
+		"defaultMessage": "Das CA-Zertifikat wird vor Ablauf automatisch im Hintergrund erneuert. Bereits ausgestellte Client-Zertifikate bleiben gültig."
+	},
+	"client-cas": {
+		"defaultMessage": "Client-CAs"
+	},
+	"client-certificate": {
+		"defaultMessage": "Client-Zertifikat"
+	},
+	"client-certificate.delete.confirm": {
+		"defaultMessage": "Dieses Client-Zertifikat löschen? Ist es noch gültig, wird es gesperrt."
+	},
+	"client-certificate.expired": {
+		"defaultMessage": "Abgelaufen"
+	},
+	"client-certificate.format": {
+		"defaultMessage": "Format"
+	},
+	"client-certificate.format.help": {
+		"defaultMessage": "PKCS#12 kann in Browser und Betriebssysteme importiert werden. PEM enthält Schlüssel, Zertifikat und CA in einer Datei."
+	},
+	"client-certificate.format.pem": {
+		"defaultMessage": "PEM (.pem)"
+	},
+	"client-certificate.format.pkcs12": {
+		"defaultMessage": "PKCS#12 (.p12)"
+	},
+	"client-certificate.issue": {
+		"defaultMessage": "Client-Zertifikat ausstellen"
+	},
+	"client-certificate.issue-download": {
+		"defaultMessage": "Ausstellen & herunterladen"
+	},
+	"client-certificate.issued": {
+		"defaultMessage": "Das Client-Zertifikat wurde ausgestellt und heruntergeladen"
+	},
+	"client-certificate.key-notice": {
+		"defaultMessage": "Der private Schlüssel wird jetzt erzeugt und ist nur in diesem Download enthalten. Er wird nicht gespeichert und kann nicht erneut heruntergeladen werden."
+	},
+	"client-certificate.name.help": {
+		"defaultMessage": "Wird als Common Name (CN) des Zertifikats verwendet, z. B. die Person oder das Gerät"
+	},
+	"client-certificate.password.help-pem": {
+		"defaultMessage": "Optional, verschlüsselt den privaten Schlüssel"
+	},
+	"client-certificate.password.help-pkcs12": {
+		"defaultMessage": "Schützt die Datei, für PKCS#12 erforderlich"
+	},
+	"client-certificate.revoke": {
+		"defaultMessage": "Sperren"
+	},
+	"client-certificate.revoke.confirm": {
+		"defaultMessage": "Dieses Client-Zertifikat sperren? Es kann danach nicht mehr verwendet werden, dies kann nicht rückgängig gemacht werden."
+	},
+	"client-certificate.revoke.success": {
+		"defaultMessage": "Das Client-Zertifikat wurde gesperrt"
+	},
+	"client-certificate.revoked": {
+		"defaultMessage": "Gesperrt"
+	},
+	"client-certificate.valid": {
+		"defaultMessage": "Gültig"
+	},
+	"client-certificate.validity-days": {
+		"defaultMessage": "Gültigkeit (Tage)"
+	},
+	"client-certificate.validity-days.help": {
+		"defaultMessage": "Wird nicht automatisch erneuert"
+	},
+	"client-certificates": {
+		"defaultMessage": "Client-Zertifikate"
+	},
 	"column.access": {
 		"defaultMessage": "Zugriff"
 	},
@@ -293,6 +392,9 @@
 	"column.incoming-port": {
 		"defaultMessage": "Eingehender Port"
 	},
+	"column.mtls": {
+		"defaultMessage": "mTLS"
+	},
 	"column.name": {
 		"defaultMessage": "Name"
 	},
@@ -320,6 +422,9 @@
 	"column.scheme": {
 		"defaultMessage": "Schema"
 	},
+	"column.serial": {
+		"defaultMessage": "Seriennummer"
+	},
 	"column.source": {
 		"defaultMessage": "Quelle"
 	},
@@ -329,11 +434,17 @@
 	"column.status": {
 		"defaultMessage": "Status"
 	},
+	"column.validity": {
+		"defaultMessage": "Gültigkeit"
+	},
 	"created-on": {
 		"defaultMessage": "Erstelldatum: {date}"
 	},
 	"dashboard": {
 		"defaultMessage": "Dashboard"
+	},
+	"days-count": {
+		"defaultMessage": "{count} {count, plural, one {Tag} other {Tage}}"
 	},
 	"dead-host": {
 		"defaultMessage": "404 Host"
@@ -396,7 +507,7 @@
 		"defaultMessage": "aktiviert"
 	},
 	"error.access.at-least-one": {
-		"defaultMessage": "Entweder eine Genehmigung oder eine Zugriffsregel ist erforderlich."
+		"defaultMessage": "Entweder eine Genehmigung, eine Zugriffsregel oder eine Client-CA ist erforderlich."
 	},
 	"error.access.duplicate-usernames": {
 		"defaultMessage": "Autorisierung Benutzernamen müssen eindeutig sein"
@@ -616,6 +727,9 @@
 	},
 	"object.event.renewed": {
 		"defaultMessage": "{object} erneuert"
+	},
+	"object.event.revoked": {
+		"defaultMessage": "{object} gesperrt"
 	},
 	"object.event.updated": {
 		"defaultMessage": "{object} aktualisiert"

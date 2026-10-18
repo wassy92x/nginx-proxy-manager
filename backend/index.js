@@ -2,6 +2,7 @@
 
 import app from "./app.js";
 import internalCertificate from "./internal/certificate.js";
+import internalClientCa from "./internal/client-ca.js";
 import internalIpRanges from "./internal/ip_ranges.js";
 import { global as logger } from "./logger.js";
 import { migrateUp } from "./migrate.js";
@@ -26,6 +27,7 @@ async function appStart() {
 		})
 		.then(() => {
 			internalCertificate.initTimer();
+			internalClientCa.initTimer();
 			if (IP_RANGES_FETCH_ENABLED) {
 				internalIpRanges.initTimer();
 			}

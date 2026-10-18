@@ -20,6 +20,7 @@ mkdir -p \
 	/data/custom_ssl \
 	/data/logs \
 	/data/access \
+	/data/client_ca \
 	/data/nginx/default_host \
 	/data/nginx/default_www \
 	/data/nginx/proxy_host \

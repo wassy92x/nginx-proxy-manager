@@ -6,6 +6,7 @@ import db from "../db.js";
 import { convertBoolFieldsToInt, convertIntFieldsToBool } from "../lib/helpers.js";
 import AccessListAuth from "./access_list_auth.js";
 import AccessListClient from "./access_list_client.js";
+import ClientCa from "./client_ca.js";
 import now from "./now_helper.js";
 import ProxyHostModel from "./proxy_host.js";
 import User from "./user.js";
@@ -82,6 +83,21 @@ class AccessList extends Model {
 				join: {
 					from: "access_list.id",
 					to: "access_list_client.access_list_id",
+				},
+			},
+			client_cas: {
+				relation: Model.ManyToManyRelation,
+				modelClass: ClientCa,
+				join: {
+					from: "access_list.id",
+					through: {
+						from: "access_list_client_ca.access_list_id",
+						to: "access_list_client_ca.client_ca_id",
+					},
+					to: "client_ca.id",
+				},
+				modify: (qb) => {
+					qb.where("client_ca.is_deleted", 0);
 				},
 			},
 			proxy_hosts: {

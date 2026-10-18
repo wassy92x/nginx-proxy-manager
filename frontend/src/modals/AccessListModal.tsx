@@ -5,7 +5,7 @@ import { type ReactNode, useState } from "react";
 import { Alert } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import type { AccessList, AccessListClient, AccessListItem } from "src/api/backend";
-import { AccessClientFields, BasicAuthFields, Button, Loading } from "src/components";
+import { AccessClientFields, BasicAuthFields, Button, ClientCasField, Loading } from "src/components";
 import { useAccessList, useSetAccessList } from "src/hooks";
 import { intl, T } from "src/locale";
 import { validateString } from "src/modules/Validations";
@@ -19,14 +19,14 @@ interface Props extends InnerModalProps {
 	id: number | "new";
 }
 const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
-	const { data, isLoading, error } = useAccessList(id, ["items", "clients"]);
+	const { data, isLoading, error } = useAccessList(id, ["items", "clients", "client_cas"]);
 	const { mutate: setAccessList } = useSetAccessList();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const validate = (values: any): string | null => {
-		// either Auths or Clients must be defined
-		if (values.items?.length === 0 && values.clients?.length === 0) {
+		// either Auths, Clients or Client CAs must be defined
+		if (values.items?.length === 0 && values.clients?.length === 0 && !values.clientCaIds?.length) {
 			return intl.formatMessage({ id: "error.access.at-least-one" });
 		}
 
@@ -102,6 +102,7 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							passAuth: data?.passAuth,
 							items: data?.items || [],
 							clients: data?.clients || [],
+							clientCaIds: data?.clientCas?.map((ca) => ca.id || 0) || [],
 						} as AccessList
 					}
 					onSubmit={onSubmit}
@@ -153,6 +154,18 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 													role="tab"
 												>
 													<T id="column.rules" />
+												</a>
+											</li>
+											<li className="nav-item" role="presentation">
+												<a
+													href="#tab-mtls"
+													className="nav-link"
+													data-bs-toggle="tab"
+													aria-selected="false"
+													tabIndex={-1}
+													role="tab"
+												>
+													<T id="column.mtls" />
 												</a>
 											</li>
 										</ul>
@@ -261,6 +274,12 @@ const AccessListModal = EasyModal.create(({ id, visible, remove }: Props) => {
 											</div>
 											<div className="tab-pane" id="tab-rules" role="tabpanel">
 												<AccessClientFields initialValues={data?.clients || []} />
+											</div>
+											<div className="tab-pane" id="tab-mtls" role="tabpanel">
+												<ClientCasField />
+												<p className="text-secondary mb-0">
+													<T id="access-list.mtls.help" />
+												</p>
 											</div>
 										</div>
 									</div>

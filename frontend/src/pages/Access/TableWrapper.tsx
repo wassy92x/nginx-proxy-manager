@@ -12,7 +12,7 @@ import Table from "./Table";
 
 export default function TableWrapper() {
 	const [search, setSearch] = useState("");
-	const { isFetching, isLoading, isError, error, data } = useAccessLists(["owner", "items", "clients"]);
+	const { isFetching, isLoading, isError, error, data } = useAccessLists(["owner", "items", "clients", "client_cas"]);
 
 	if (isLoading) {
 		return <LoadingPage />;

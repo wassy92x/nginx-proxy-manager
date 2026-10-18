@@ -74,11 +74,11 @@ class ProxyHost extends Model {
 	}
 
 	static get defaultAllowGraph() {
-		return "[owner,access_list.[clients,items],certificate]";
+		return "[owner,access_list.[clients,items,client_cas],certificate]";
 	}
 
 	static get defaultExpand() {
-		return ["owner", "certificate", "access_list.[clients,items]"];
+		return ["owner", "certificate", "access_list.[clients,items,client_cas]"];
 	}
 
 	static get defaultOrder() {

@@ -192,6 +192,47 @@ You can add your custom configuration snippet files at `/data/nginx/custom` as f
 Every file is optional.
 
 
+## Client Certificate Authentication (mTLS)
+
+Proxy Hosts can require clients to present a TLS client certificate. Nginx Proxy Manager
+runs its own Client Certificate Authorities (CAs) for this, managed on the **Client CAs** page.
+
+1. Create a Client CA and choose its maximum validity. The CA certificate is renewed
+   automatically in the background before it expires. The renewal keeps the CA key and name,
+   so client certificates that have already been issued remain valid.
+2. Issue client certificates from the CA. Each certificate has its own validity and is
+   **not** renewed automatically. The private key is generated when you issue the certificate
+   and is only part of that download (PKCS#12 or PEM), it is never stored. If a key is lost,
+   issue a new certificate.
+3. Select one or more Client CAs on the **mTLS** tab of an Access List and use that Access List
+   for a Proxy Host or one of its custom locations. The host needs an SSL certificate.
+
+The client certificate is then one more access check of the Access List, next to the
+authorizations (basic auth) and the IP rules. All of them are combined according to the "Satisfy Any"
+option: with "Satisfy Any" one passing check is enough, eg. a valid client certificate *or* a correct
+password, otherwise all of them must pass. A certificate from a CA that the Access List doesn't trust
+does not pass the check.
+
+A host only asks for client certificates when one of its Access Lists uses a Client CA, and only names
+the CAs those Access Lists trust. If a client presents a revoked or expired certificate, nginx rejects
+the request with `400` for the whole host, even where a password or IP rule would have let it through.
+Remove the certificate from the client in that case.
+
+Revoking or deleting a client certificate puts it on the CA's certificate revocation list. A Client CA
+can only be deleted once no Access List uses it anymore.
+
+The upstream receives these headers:
+
+ - `X-SSL-Client-Verify`: the verification result, eg. `SUCCESS`, or `NONE` when access was granted without a certificate
+ - `X-SSL-Client-S-DN`: the subject of the client certificate, eg. `O=Nginx Proxy Manager,CN=jane-laptop`
+ - `X-SSL-Client-Serial`: the serial number of the client certificate
+
+Like Let's Encrypt and custom certificates, each Client CA is kept on the file system in
+`/data/client_ca/npm-<id>/`: the CA certificate (`cert.pem`), its private key (`privkey.pem`) and its
+revocation list (`crl.pem`). Include this folder in your backups, without the key no more client
+certificates can be issued or revoked. The bundles nginx uses, one per combination of Client CAs, are
+kept in `/data/client_ca` as well.
+
 ## X-FRAME-OPTIONS Header
 
 You can configure the [`X-FRAME-OPTIONS`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options) header

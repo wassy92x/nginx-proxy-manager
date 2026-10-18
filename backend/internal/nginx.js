@@ -178,14 +178,19 @@ const internalNginx = {
 							.query()
 							.where("is_deleted", 0)
 							.andWhere("id", locationCopy.access_list_id)
-							.withGraphFetched("[clients,items]")
+							.withGraphFetched("[clients,items,client_cas]")
 							.first();
 					}
 					if (locationAccessList) {
-						locationCopy.access_list = locationAccessList;
+						locationCopy.access_list = JSON.parse(JSON.stringify(locationAccessList));
 					} else {
 						locationCopy.access_list_id = host.access_list_id;
 						locationCopy.access_list = host.access_list;
+					}
+
+					// Client certificates are requested on the server level when any location needs them
+					if (locationCopy.access_list_id > 0) {
+						internalNginx.addMtlsAccessList(host, locationCopy.access_list);
 					}
 
 					if (locationCopy.forward_host.indexOf("/") > -1) {
@@ -203,6 +208,45 @@ const internalNginx = {
 				.then(() => resolve(renderedLocations))
 				.catch(reject);
 		});
+	},
+
+	/**
+	 * Remembers an access list that requires client certificates, the server block
+	 * gets an internal location per list that auth_request uses to check the certificate
+	 *
+	 * @param   {Object}  host
+	 * @param   {Object}  [accessList]
+	 */
+	addMtlsAccessList: (host, accessList) => {
+		if (!accessList?.id || !accessList.client_cas?.length) {
+			return;
+		}
+		host.mtls_enabled = true;
+		host.mtls_access_lists = host.mtls_access_lists || [];
+		if (!host.mtls_access_lists.some((list) => list.id === accessList.id)) {
+			host.mtls_access_lists.push({
+				id: accessList.id,
+				client_ca_ids: accessList.client_cas.map((ca) => ca.id),
+			});
+		}
+	},
+
+	/**
+	 * Writes the CA certificates and CRLs for all Client CAs that the host's access lists
+	 * trust, and points the host at them. Only these CAs are sent to clients.
+	 *
+	 * @param   {Object}  host
+	 * @returns {Promise}
+	 */
+	writeMtlsBundle: async (host) => {
+		if (!host.mtls_enabled) {
+			return;
+		}
+		// Imported here, internal/client-ca.js imports this file
+		const { default: internalClientCa } = await import("./client-ca.js");
+		const files = await internalClientCa.writeBundle(_.flatMap(host.mtls_access_lists, "client_ca_ids"));
+		host.client_ca_bundle = files.ca;
+		host.client_crl_bundle = files.crl;
 	},
 
 	/**
@@ -279,26 +323,34 @@ const internalNginx = {
 			// Set the IPv6 setting for the host
 			host.ipv6 = internalNginx.ipv6Enabled();
 
-			locationsPromise.then(() => {
-				renderEngine
-					.parseAndRender(template, host)
-					.then((config_text) => {
-						fs.writeFileSync(filename, config_text, { encoding: "utf8" });
-						debug(logger, "Wrote config:", filename, config_text);
+			// mTLS, the server level directives for the default location.
+			// Custom locations add theirs while they are rendered.
+			if (host.access_list_id > 0) {
+				internalNginx.addMtlsAccessList(host, host.access_list);
+			}
+			locationsPromise
+				.then(() => internalNginx.writeMtlsBundle(host))
+				.then(() => {
+					renderEngine
+						.parseAndRender(template, host)
+						.then((config_text) => {
+							fs.writeFileSync(filename, config_text, { encoding: "utf8" });
+							debug(logger, "Wrote config:", filename, config_text);
 
-						// Restore locations array
-						host.locations = origLocations;
+							// Restore locations array
+							host.locations = origLocations;
 
-						resolve(true);
-					})
-					.catch((err) => {
-						debug(logger, `Could not write ${filename}:`, err.message);
-						reject(new errs.ConfigurationError(err.message));
-					});
-			}).catch((err) => {
-				debug(logger, `Could not render locations for ${filename}:`, err.message);
-				reject(new errs.ConfigurationError(err.message));
-			});
+							resolve(true);
+						})
+						.catch((err) => {
+							debug(logger, `Could not write ${filename}:`, err.message);
+							reject(new errs.ConfigurationError(err.message));
+						});
+				})
+				.catch((err) => {
+					debug(logger, `Could not render locations for ${filename}:`, err.message);
+					reject(new errs.ConfigurationError(err.message));
+				});
 		});
 	},
 
@@ -326,13 +378,14 @@ const internalNginx = {
 			if (
 				host.access_list?.id !== host.access_list_id ||
 				!Array.isArray(host.access_list.clients) ||
-				!Array.isArray(host.access_list.items)
+				!Array.isArray(host.access_list.items) ||
+				!Array.isArray(host.access_list.client_cas)
 			) {
 				const accessList = await accessListModel
 					.query()
 					.where("is_deleted", 0)
 					.andWhere("id", host.access_list_id)
-					.withGraphFetched("[clients,items]")
+					.withGraphFetched("[clients,items,client_cas]")
 					.first();
 				host.access_list = accessList ? JSON.parse(JSON.stringify(accessList)) : null;
 			}
@@ -341,7 +394,11 @@ const internalNginx = {
 				logger.warn(
 					`Proxy Host #${host.id} references Access List #${host.access_list_id} which does not exist`,
 				);
-			} else if (!host.access_list.clients.length && !host.access_list.items.length) {
+			} else if (
+				!host.access_list.clients.length &&
+				!host.access_list.items.length &&
+				!host.access_list.client_cas.length
+			) {
 				logger.warn(
 					`Proxy Host #${host.id} uses Access List #${host.access_list_id} which has no clients or authorizations, no access restrictions will apply`,
 				);

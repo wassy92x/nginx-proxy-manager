@@ -82,7 +82,7 @@ const internalHost = {
 		const proxyRes = await proxyHostModel
 			.query()
 			.where("is_deleted", 0)
-			.withGraphFetched("[certificate, access_list.[clients,items]]");
+			.withGraphFetched("[certificate, access_list.[clients,items,client_cas]]");
 		responseObject.proxy_hosts = internalHost._getHostsWithDomains(proxyRes, domainNames);
 		responseObject.total_count += responseObject.proxy_hosts.length;
 

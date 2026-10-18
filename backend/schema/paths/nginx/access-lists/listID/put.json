@@ -44,6 +44,9 @@
 						},
 						"clients": {
 							"$ref": "../../../../common.json#/properties/access_clients"
+						},
+						"client_ca_ids": {
+							"$ref": "../../../../components/access-list-object.json#/properties/client_ca_ids"
 						}
 					}
 				},

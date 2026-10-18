@@ -77,6 +77,15 @@
 	"access-list.inherit.subtitle": {
 		"defaultMessage": "Utilise la liste d'accès de l'hôte proxy"
 	},
+	"access-list.mtls.help": {
+		"defaultMessage": "When Client CAs are selected, a valid client certificate (mTLS) issued by one of them is accepted. Like the authorizations and rules, it is combined according to Satisfy Any. Client certificates only work for hosts that use an SSL certificate."
+	},
+	"access-list.mtls.no-cas": {
+		"defaultMessage": "No Client CAs yet, create one under Client CAs"
+	},
+	"access-list.mtls.placeholder": {
+		"defaultMessage": "No client certificate required"
+	},
 	"access-list.pass-auth": {
 		"defaultMessage": "Transmettre l'authentification au serveur en amont"
 	},
@@ -257,6 +266,96 @@
 	"certificates.request.title": {
 		"defaultMessage": "Demander un nouveau certificat"
 	},
+	"client-ca": {
+		"defaultMessage": "Client CA"
+	},
+	"client-ca.certificate-count": {
+		"defaultMessage": "{count} active"
+	},
+	"client-ca.delete.content": {
+		"defaultMessage": "Are you sure you want to delete this Client CA? All of its client certificates will stop working."
+	},
+	"client-ca.download": {
+		"defaultMessage": "Download CA Certificate"
+	},
+	"client-ca.name.help": {
+		"defaultMessage": "The name is a label only, the CA certificate keeps its original name so that issued client certificates stay valid."
+	},
+	"client-ca.validity-days": {
+		"defaultMessage": "Maximum Validity (Days)"
+	},
+	"client-ca.validity-days.help": {
+		"defaultMessage": "The CA certificate is renewed automatically in the background before it expires. Client certificates that have been issued stay valid."
+	},
+	"client-cas": {
+		"defaultMessage": "Client CAs"
+	},
+	"client-certificate": {
+		"defaultMessage": "Client Certificate"
+	},
+	"client-certificate.delete.confirm": {
+		"defaultMessage": "Delete this client certificate? If it is still valid, it will be revoked."
+	},
+	"client-certificate.expired": {
+		"defaultMessage": "Expired"
+	},
+	"client-certificate.format": {
+		"defaultMessage": "Format"
+	},
+	"client-certificate.format.help": {
+		"defaultMessage": "PKCS#12 can be imported into browsers and operating systems. PEM contains the key, the certificate and the CA in one file."
+	},
+	"client-certificate.format.pem": {
+		"defaultMessage": "PEM (.pem)"
+	},
+	"client-certificate.format.pkcs12": {
+		"defaultMessage": "PKCS#12 (.p12)"
+	},
+	"client-certificate.issue": {
+		"defaultMessage": "Issue Client Certificate"
+	},
+	"client-certificate.issue-download": {
+		"defaultMessage": "Issue & Download"
+	},
+	"client-certificate.issued": {
+		"defaultMessage": "The client certificate has been issued and downloaded"
+	},
+	"client-certificate.key-notice": {
+		"defaultMessage": "The private key is generated now and is only included in this download. It is not stored and can not be downloaded again."
+	},
+	"client-certificate.name.help": {
+		"defaultMessage": "Used as the Common Name (CN) of the certificate, eg. the person or device"
+	},
+	"client-certificate.password.help-pem": {
+		"defaultMessage": "Optional, encrypts the private key"
+	},
+	"client-certificate.password.help-pkcs12": {
+		"defaultMessage": "Protects the file, required for PKCS#12"
+	},
+	"client-certificate.revoke": {
+		"defaultMessage": "Revoke"
+	},
+	"client-certificate.revoke.confirm": {
+		"defaultMessage": "Revoke this client certificate? It can no longer be used and this can not be undone."
+	},
+	"client-certificate.revoke.success": {
+		"defaultMessage": "The client certificate has been revoked"
+	},
+	"client-certificate.revoked": {
+		"defaultMessage": "Revoked"
+	},
+	"client-certificate.valid": {
+		"defaultMessage": "Valid"
+	},
+	"client-certificate.validity-days": {
+		"defaultMessage": "Validity (Days)"
+	},
+	"client-certificate.validity-days.help": {
+		"defaultMessage": "Not renewed automatically"
+	},
+	"client-certificates": {
+		"defaultMessage": "Client Certificates"
+	},
 	"column.access": {
 		"defaultMessage": "Accès"
 	},
@@ -293,6 +392,9 @@
 	"column.incoming-port": {
 		"defaultMessage": "Port entrant"
 	},
+	"column.mtls": {
+		"defaultMessage": "mTLS"
+	},
 	"column.name": {
 		"defaultMessage": "Nom"
 	},
@@ -320,6 +422,9 @@
 	"column.scheme": {
 		"defaultMessage": "Schéma"
 	},
+	"column.serial": {
+		"defaultMessage": "Serial"
+	},
 	"column.source": {
 		"defaultMessage": "Source"
 	},
@@ -329,11 +434,17 @@
 	"column.status": {
 		"defaultMessage": "Statut"
 	},
+	"column.validity": {
+		"defaultMessage": "Validity"
+	},
 	"created-on": {
 		"defaultMessage": "Création : {date}"
 	},
 	"dashboard": {
 		"defaultMessage": "Tableau de bord"
+	},
+	"days-count": {
+		"defaultMessage": "{count} {count, plural, one {Day} other {Days}}"
 	},
 	"dead-host": {
 		"defaultMessage": "Hôte 404"
@@ -616,6 +727,9 @@
 	},
 	"object.event.renewed": {
 		"defaultMessage": "{object} renouvelé"
+	},
+	"object.event.revoked": {
+		"defaultMessage": "Revoked {object}"
 	},
 	"object.event.updated": {
 		"defaultMessage": "{object} mis à jour"

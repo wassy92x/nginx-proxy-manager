@@ -37,6 +37,10 @@
 			"description": "Endpoints related to Certificates"
 		},
 		{
+			"name": "client-cas",
+			"description": "Endpoints related to Client Certificate Authorities and Client Certificates for mTLS"
+		},
+		{
 			"name": "404-hosts",
 			"description": "Endpoints related to 404 Hosts"
 		},
@@ -158,6 +162,53 @@
 		"/nginx/certificates/{certID}/upload": {
 			"post": {
 				"$ref": "./paths/nginx/certificates/certID/upload/post.json"
+			}
+		},
+		"/nginx/client-cas": {
+			"get": {
+				"$ref": "./paths/nginx/client-cas/get.json"
+			},
+			"post": {
+				"$ref": "./paths/nginx/client-cas/post.json"
+			}
+		},
+		"/nginx/client-cas/{caID}": {
+			"get": {
+				"$ref": "./paths/nginx/client-cas/caID/get.json"
+			},
+			"put": {
+				"$ref": "./paths/nginx/client-cas/caID/put.json"
+			},
+			"delete": {
+				"$ref": "./paths/nginx/client-cas/caID/delete.json"
+			}
+		},
+		"/nginx/client-cas/{caID}/renew": {
+			"post": {
+				"$ref": "./paths/nginx/client-cas/caID/renew/post.json"
+			}
+		},
+		"/nginx/client-cas/{caID}/download": {
+			"get": {
+				"$ref": "./paths/nginx/client-cas/caID/download/get.json"
+			}
+		},
+		"/nginx/client-cas/{caID}/certificates": {
+			"get": {
+				"$ref": "./paths/nginx/client-cas/caID/certificates/get.json"
+			},
+			"post": {
+				"$ref": "./paths/nginx/client-cas/caID/certificates/post.json"
+			}
+		},
+		"/nginx/client-cas/{caID}/certificates/{certID}": {
+			"delete": {
+				"$ref": "./paths/nginx/client-cas/caID/certificates/certID/delete.json"
+			}
+		},
+		"/nginx/client-cas/{caID}/certificates/{certID}/revoke": {
+			"post": {
+				"$ref": "./paths/nginx/client-cas/caID/certificates/certID/revoke/post.json"
 			}
 		},
 		"/nginx/proxy-hosts": {

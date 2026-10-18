@@ -1,0 +1,7 @@
+{
+	"type": "array",
+	"description": "Client CA list",
+	"items": {
+		"$ref": "./client-ca-object.json"
+	}
+}

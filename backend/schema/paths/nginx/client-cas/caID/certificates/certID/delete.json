@@ -1,0 +1,56 @@
+{
+	"operationId": "deleteClientCertificate",
+	"summary": "Delete a Client Certificate",
+	"description": "A certificate that is still valid is revoked first.",
+	"tags": [
+		"client-cas"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"access_lists.manage"
+			]
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "caID",
+			"description": "Client CA ID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"example": 1
+		},
+		{
+			"in": "path",
+			"name": "certID",
+			"description": "Client Certificate ID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"example": 1
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"type": "boolean"
+					},
+					"examples": {
+						"default": {
+							"value": true
+						}
+					}
+				}
+			}
+		}
+	}
+}
